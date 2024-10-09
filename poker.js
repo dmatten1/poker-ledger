@@ -1,20 +1,46 @@
-const csvFile = document.getElementById('csvFile');
+const csvFile = document.getElementById('csvFile'); //can also be .xlsx
 const button = document.getElementById('button');
-
-
 button.addEventListener('click', () => {
   const column = document.getElementById('colNum').value;
   const colNum = Number(column);
-  const file = csvFile.files[0]; // Get the file from the input element
+
+  const file = csvFile.files[0]; // Get the file from the input element, can be .csv or .xlsx
+  if (!file) {
+    alert("Please select a file.");
+    return;
+  } 
+  if (!column) {
+    alert("Please select a number.");
+    return;
+  }
+  const fileExtension = file.name.split('.').pop().toLowerCase();
   const reader = new FileReader();
 
   reader.onload = (event) => {
-    const csvData = event.target.result;
+    let csvData;
+    if (fileExtension === 'xlsx') {
+      const data = new Uint8Array(event.target.result);
+      const workbook = XLSX.read(data, { type: 'array' });
+
+      // Get the first sheet
+      const firstSheet = workbook.SheetNames[0];
+      const worksheet = workbook.Sheets[firstSheet];
+      csvData = XLSX.utils.sheet_to_csv(worksheet);
+    }
+    else {
+      csvData = event.target.result;
+    }
+    
     const rows = csvData.split('\n');
     
     let data = new Map();
+    let endpoint;
+    if (fileExtension === 'csv') {endpoint = rows.length-1;}
+    else {
+      endpoint = rows.length;
+    }
 
-    for (let i = 1; i < rows.length-1; i++) {
+    for (let i = 1; i < endpoint; i++) {
       const currentRow = rows[i].split(',');
       const key = currentRow[0];
 
@@ -35,7 +61,11 @@ button.addEventListener('click', () => {
 
 
     data.forEach((value, key) => {
-      document.write(`${key.slice(1,-1)}: ${Number(value)}<br>`);
+      if (fileExtension === 'csv') {document.write(`${key.slice(1,-1)}: ${Number(value)}<br>`);}
+      else {
+        document.write(`${key}: ${Number(value)}<br>`);
+      }
+      
     });
 
     //actually start doing the math
@@ -86,7 +116,9 @@ button.addEventListener('click', () => {
         }
 
   };
-
-  reader.readAsText(file); // Read the file
-  
-});
+  if (fileExtension === 'xlsx') {
+    reader.readAsArrayBuffer(file); // Read XLSX as binary data
+  } 
+  else {
+    reader.readAsText(file); // Read CSV as plain text
+    }});

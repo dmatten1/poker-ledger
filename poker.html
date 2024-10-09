@@ -5,12 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Poker Ledger</title>
     <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 </head>
 <body>
     <p>If in PokerNow: Navigate to the Ledger tab under Log/Ledger. Once there, click "Download Ledger". Then, select the .csv from your downloads folder.</p>
-    <input type="file" id="csvFile" accept=".csv">
+    <label for="csvFile">.csv or .xlsx:</label>
+    <input type="file" id="csvFile" accept=".csv,.xlsx">
     <br></br>
-    <caption style="font-size: x-small">Net Column Number: </caption>
+    <caption>Net Column Number: </caption>
     <input type="number" id="colNum" placeholder="pokernow:7">
     <br></br>
     <button id="button">Submit</button>
