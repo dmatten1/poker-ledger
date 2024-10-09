@@ -1,8 +1,10 @@
 const csvFile = document.getElementById('csvFile');
 const button = document.getElementById('button');
-const column = document.getElementById(`colNum`);
+
 
 button.addEventListener('click', () => {
+  const column = document.getElementById('colNum').value;
+  const colNum = Number(column);
   const file = csvFile.files[0]; // Get the file from the input element
   const reader = new FileReader();
 
@@ -10,13 +12,20 @@ button.addEventListener('click', () => {
     const csvData = event.target.result;
     const rows = csvData.split('\n');
     
-    let data = new Map(); // Ensure data is a Map
+    let data = new Map();
 
     for (let i = 1; i < rows.length-1; i++) {
       const currentRow = rows[i].split(',');
-      const key = currentRow[0]; // Unique value in first column
-      const value = Math.round(Number.parseFloat(currentRow[column])/100); // Value from the 8th column
+      const key = currentRow[0];
 
+      console.log(colNum);
+      console.log(typeof colNum);
+      console.log(currentRow[colNum]);
+
+      const value = Math.round(Number.parseFloat(currentRow[Number(colNum)])/100); // Value from the 8th column
+
+      // console.log(value);
+      // console.log(typeof value)
       if (!data.has(key)) {
         data.set(key, value);
       } else {
@@ -24,8 +33,6 @@ button.addEventListener('click', () => {
       }
     }
 
-    console.log(data); // Map of accumulated values
-    console.log([data.entries()]);
 
     data.forEach((value, key) => {
       document.write(`${key.slice(1,-1)}: ${Number(value)}<br>`);
