@@ -1,5 +1,6 @@
 const csvFile = document.getElementById('csvFile');
 const button = document.getElementById('button');
+const column = document.getElementById(`colNum`);
 
 button.addEventListener('click', () => {
   const file = csvFile.files[0]; // Get the file from the input element
@@ -14,7 +15,7 @@ button.addEventListener('click', () => {
     for (let i = 1; i < rows.length-1; i++) {
       const currentRow = rows[i].split(',');
       const key = currentRow[0]; // Unique value in first column
-      const value = Math.round(Number.parseFloat(currentRow[7])/100); // Value from the 8th column
+      const value = Math.round(Number.parseFloat(currentRow[column])/100); // Value from the 8th column
 
       if (!data.has(key)) {
         data.set(key, value);
