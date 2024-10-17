@@ -41,6 +41,17 @@ button.addEventListener('click', () => {
     }
 
     for (let i = 1; i < endpoint; i++) {
+      let nameEndIndex = rows[i].indexOf("\"", 1);
+      for (let j=1;j<nameEndIndex;j++) {  //check for commas in the name that might screw with the comma splitting
+          if (rows[i].charAt(j) == ',') {
+              rows[i] = rows[i].substring(0,j) + rows[i].substring(j+1);
+              j--;
+          }
+      }
+
+
+
+
       const currentRow = rows[i].split(',');
       const key = currentRow[0];
 
@@ -48,7 +59,7 @@ button.addEventListener('click', () => {
       console.log(typeof colNum);
       console.log(currentRow[colNum]);
 
-      const value = Math.round(Number.parseFloat(currentRow[Number(colNum)])/100); // Value from the 8th column
+      const value = Math.round(Number.parseFloat(currentRow[(colNum)])/100); // Value from the 8th column
 
       // console.log(value);
       // console.log(typeof value)
