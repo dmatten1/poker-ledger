@@ -1,5 +1,6 @@
 const csvFile = document.getElementById('csvFile'); //can also be .xlsx
 const button = document.getElementById('button');
+const addAllTimeButton = document.getElementById('addToAllTime');
 let resultLedger = "";
 button.addEventListener('click', () => {
   const column = document.getElementById('colNum').value;
@@ -141,5 +142,5 @@ button.addEventListener('click', () => {
 function loadLedger() {
   localStorage.setItem('ledgerData', resultLedger);
   window.location.href = 'ledgerPage.html';
-  
+
 }
