@@ -1,5 +1,6 @@
 const csvFile = document.getElementById('csvFile'); //can also be .xlsx
 const button = document.getElementById('button');
+let resultLedger = "";
 button.addEventListener('click', () => {
   const column = document.getElementById('colNum').value;
   const colNum = Number(column);
@@ -55,14 +56,9 @@ button.addEventListener('click', () => {
       const currentRow = rows[i].split(',');
       const key = currentRow[0];
 
-      console.log(colNum);
-      console.log(typeof colNum);
-      console.log(currentRow[colNum]);
-
       const value = Math.round(Number.parseFloat(currentRow[(colNum)])/100); // Value from the 8th column
 
-      // console.log(value);
-      // console.log(typeof value)
+
       if (!data.has(key)) {
         data.set(key, value);
       } else {
@@ -72,9 +68,11 @@ button.addEventListener('click', () => {
 
 
     data.forEach((value, key) => {
-      if (fileExtension === 'csv') {document.write(`${key.slice(1,-1)}: ${Number(value)}<br>`);}
+      if (fileExtension === 'csv') {
+        resultLedger += (`${key.slice(1,-1)}: ${Number(value)}<br>`);
+      }
       else {
-        document.write(`${key}: ${Number(value)}<br>`);
+        resultLedger += (`${key}: ${Number(value)}<br>`);
       }
       
     });
@@ -101,8 +99,8 @@ button.addEventListener('click', () => {
     // Get the current date
     let cal = new Date();
     let formatted = cal.toISOString().split('T')[0]; // Format the date as yyyy-MM-dd
-    document.write(`<br><br>` + formatted + `<br><br>`);
-    document.write('Ledger:<br>');
+    resultLedger += (`<br><br>` + formatted + `<br><br>`);
+    resultLedger += ('Ledger:<br>');
 
     for (let loser of losers) {
     let amountOwed = Math.abs(data.get(loser));
@@ -118,18 +116,30 @@ button.addEventListener('click', () => {
         let payment = Math.min(amountOwed, winnerNet);
 
         // Print who owes whom
-        document.write(`${loser} owes ${winner} $${Number(Math.round(payment))}<br>`);
+        resultLedger += (`${loser} owes ${winner} $${Number(Math.round(payment))}<br>`);
 
         // Update remaining amounts
         amountOwed -= payment;
         data.set(winner, data.get(winner)-payment);
         }
         }
-
+        //document.write(resultLedger);   test if resultLedger is correct
+        loadLedger();
   };
+
+  //start doing
   if (fileExtension === 'xlsx') {
     reader.readAsArrayBuffer(file); // Read XLSX as binary data
   } 
   else {
     reader.readAsText(file); // Read CSV as plain text
-    }});
+    }
+  
+  
+  });
+
+function loadLedger() {
+  localStorage.setItem('ledgerData', resultLedger);
+  window.location.href = 'ledgerPage.html';
+  
+}
