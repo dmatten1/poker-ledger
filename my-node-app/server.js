@@ -1,62 +1,44 @@
-const express = require('express');      // Import Express framework
-const mongoose = require('mongoose');    // Import Mongoose to interact with MongoDB
-const bodyParser = require('body-parser'); // To handle JSON request bodies
-const cors = require('cors');            // To allow cross-origin requests
+import express from 'express';
+import mongoose from 'mongoose'; // Make sure to import mongoose
+import cors from 'cors';
 
 // Initialize Express app
 const app = express();
-app.use(cors());                        // Enable CORS
-app.use(bodyParser.json());             // Parse JSON bodies
+app.use(cors());                      // Enable CORS
+app.use(express.json());              // Use built-in JSON parser in Express
 
 // Connect to MongoDB database
-mongoose.connect('mongodb+srv://dmatten1:C79GRKUVmqXfDg@pokerledger.w9rjc.mongodb.net/?retryWrites=true&w=majority&appName=pokerledger', {
+mongoose.connect('mongodb+srv://dmatten1:C79GRKUVmqXfDg@pokerledger.w9rjc.mongodb.net/', {
 })
-    .then(() => console.log('MongoDB connected!'))
-    .catch(err => console.log(err));
+  .then(() => console.log('MongoDB connected!'))
+  .catch(err => console.error('MongoDB connection error:', err));
 
-// Define a schema for your table data
-const TableSchema = new mongoose.Schema({
-    name: String,
-    id: String,
-    hours: Number,
-    netProfit: Number
+// Define item schema
+const itemSchema = new mongoose.Schema({
+  name: { type: String, required: true },
+  id: { type: Number, required: true },
+  hours: { type: Number, required: true },
+  net: { type: Number, required: true },
+  hourly: { type: Number, required: true },
 });
 
-// Create a model from the schema
-const TableRow = mongoose.model('TableRow', TableSchema);
-
-// API route to get all table rows
-app.get('/api/table', async (req, res) => {
-    try {
-        const rows = await TableRow.find(); // Retrieve all rows from the database
-        res.json(rows);                    // Send them back as JSON
-    } catch (err) {
-        res.status(500).json({ message: err.message });
-    }
+// Define custom set schema
+const customSetSchema = new mongoose.Schema({
+  items: [itemSchema],
 });
+const CustomSetModel = mongoose.model('CustomSet', customSetSchema);
+export default CustomSetModel; // Export the model for use in your app
+// Create a model for the custom set
+//export const CustomSet = mongoose.model('CustomSet', customSetSchema);
 
-// API route to add a new row
-app.post('/api/table', async (req, res) => {
-    const newRow = new TableRow(req.body); // Create a new row from the request body
-    try {
-        const savedRow = await newRow.save(); // Save it to the database
-        res.status(201).json(savedRow);      // Return the saved row
-    } catch (err) {
-        res.status(400).json({ message: err.message });
-    }
-});
 
-// API route to delete a row by ID
-app.delete('/api/table/:id', async (req, res) => {
-    try {
-        const deletedRow = await TableRow.findByIdAndDelete(req.params.id);
-        if (!deletedRow) return res.status(404).json({ message: "Row not found" });
-        res.json({ message: "Row deleted" });
-    } catch (err) {
-        res.status(500).json({ message: err.message });
-    }
-});
-
-// Start the server on port 5000
+// Start the server
 const PORT = process.env.PORT || 4000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+app.listen(PORT, () => {
+  console.log(`Server is running on http://localhost:${PORT}`);
+});
+
+export const connectDB = async () => {
+  await mongoose.connect('mongodb+srv://dmatten1:C79GRKUVmqXfDg@cluster.mongodb.net/?retryWrites=true&w=majority&appName=appname', {
+  });
+};

@@ -6,7 +6,19 @@
     <title>All Time Stats</title>
 </head>
 <body>
+    <div id="ledgerContent"></div>
     <button id="goBack">Return to homepage</button>
-    <script src="allTimeStats.js"></script>
+    <script type="module" src="allTimeStats.js"></script>
 </body>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const masterLedger = localStorage.getItem('masterLedger'); // Retrieve the ledger data
+
+        if (masterLedger) {
+            document.getElementById('ledgerContent').innerHTML = ledgerData; // Insert it into the page
+        } else {
+            document.getElementById('ledgerContent').innerHTML = "No ledger data available.";
+        }
+    });
+</script>
 </html>

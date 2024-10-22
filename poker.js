@@ -1,8 +1,14 @@
+import { CustomSet } from './classes.js';
+import { Entry } from './classes.js';
+
 const csvFile = document.getElementById('csvFile'); //can also be .xlsx
 const button = document.getElementById('button');
 const statsButton = document.getElementById('goToAllTimeStats');
 let resultLedger = "";
-let entrySet = new Set(); //for now, only works with csv with time from pokernow
+let entrySet = new CustomSet(); //for now, only works with csv with time from pokernow
+
+
+
 button.addEventListener('click', () => {
   const column = document.getElementById('colNum').value;
   const colNum = Number(column);
@@ -160,11 +166,4 @@ statsButton.addEventListener('click', () => {
 })
 
 
-class Entry {
-  constructor(name, id, startTime, endTime, net) {
-    this.name = name;
-    this.id = id;
-    let time = endTime - startTime; //in Date format
-    this.net = net;
-  }
-}
+
