@@ -2,6 +2,7 @@ const csvFile = document.getElementById('csvFile'); //can also be .xlsx
 const button = document.getElementById('button');
 const statsButton = document.getElementById('goToAllTimeStats');
 let resultLedger = "";
+let entrySet = new Set(); //for now, only works with csv with time from pokernow
 button.addEventListener('click', () => {
   const column = document.getElementById('colNum').value;
   const colNum = Number(column);
@@ -60,8 +61,13 @@ button.addEventListener('click', () => {
       const value = Math.round(Number.parseFloat(currentRow[(colNum)])/100); // Value from the 8th column
 
 
+
       if (!data.has(key)) {
         data.set(key, value);
+        if (fileExtension === 'csv') {
+          entrySet.add(new Entry(`${key.slice(1,-1)}`, currentRow[1], currentRow[2], currentRow[3], value));
+        }
+        
       } else {
         data.set(key, data.get(key) + value);
       }
@@ -71,6 +77,8 @@ button.addEventListener('click', () => {
     data.forEach((value, key) => {
       if (fileExtension === 'csv') {
         resultLedger += (`${key.slice(1,-1)}: ${Number(value)}<br>`);
+        
+
       }
       else {
         resultLedger += (`${key}: ${Number(value)}<br>`);
@@ -141,6 +149,7 @@ button.addEventListener('click', () => {
 
 function loadLedger() {
   localStorage.setItem('ledgerData', resultLedger);
+  localStorage.setItem('entrySet', entrySet);
   window.location.href = 'ledgerPage.html';
 
 }
@@ -150,3 +159,12 @@ statsButton.addEventListener('click', () => {
 
 })
 
+
+class Entry {
+  constructor(name, id, startTime, endTime, net) {
+    this.name = name;
+    this.id = id;
+    let time = endTime - startTime; //in Date format
+    this.net = net;
+  }
+}

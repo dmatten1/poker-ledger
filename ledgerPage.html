@@ -8,6 +8,7 @@
 <script>
     document.addEventListener('DOMContentLoaded', () => {
         const ledgerData = localStorage.getItem('ledgerData'); // Retrieve the ledger data
+
         if (ledgerData) {
             document.getElementById('ledgerContent').innerHTML = ledgerData; // Insert it into the page
         } else {
