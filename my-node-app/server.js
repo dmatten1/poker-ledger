@@ -17,8 +17,9 @@ mongoose.connect('mongodb+srv://dmatten1:C79GRKUVmqXfDg@pokerledger.w9rjc.mongod
 // Define a schema for your table data
 const TableSchema = new mongoose.Schema({
     name: String,
-    age: Number,
-    country: String
+    id: String,
+    hours: Number,
+    netProfit: Number
 });
 
 // Create a model from the schema
