@@ -1,6 +1,6 @@
 const csvFile = document.getElementById('csvFile'); //can also be .xlsx
 const button = document.getElementById('button');
-const addAllTimeButton = document.getElementById('addToAllTime');
+const statsButton = document.getElementById('goToAllTimeStats');
 let resultLedger = "";
 button.addEventListener('click', () => {
   const column = document.getElementById('colNum').value;
@@ -118,12 +118,12 @@ button.addEventListener('click', () => {
 
         // Print who owes whom
         resultLedger += (`${loser} owes ${winner} $${Number(Math.round(payment))}<br>`);
-
         // Update remaining amounts
         amountOwed -= payment;
         data.set(winner, data.get(winner)-payment);
         }
         }
+        resultLedger += '<br></br>'
         //document.write(resultLedger);   test if resultLedger is correct
         loadLedger();
   };
@@ -144,3 +144,9 @@ function loadLedger() {
   window.location.href = 'ledgerPage.html';
 
 }
+
+statsButton.addEventListener('click', () => {
+  window.location.href = 'allTimeStats.html';
+
+})
+
