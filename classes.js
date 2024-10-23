@@ -1,77 +1,77 @@
+// Define Entry class on the client!! side
 export class Entry {
     constructor(name, id, startTime, endTime, net) {
       this.name = name;
       this.id = id;
-      let time = endTime - startTime; //in Date format
-      time = time/3600000; //hours
+      this.time = (endTime - startTime) / 3600000; // Calculate time in hours
       this.net = net;
     }
-}
-import { CustomSetModel } from './my-node-app/server.js';
-
-export class CustomSet { //that will compare either names or ids
+  }
+  
+  // Define CustomSet class on the client side
+  export class CustomSet {
     constructor() {
-    this.items = [];
+      this.items = [];
     }
-
+  
     // Add an item to the set
     add(item) {
-    const existingIndex = this.findIndex(item);
-
-    if (existingIndex === -1) {
-        // Item not found, add it to the set
-        this.items.push(item);
-    } else {
-        // Item exists, modify the existing one (update properties as needed)
+      const existingIndex = this.findIndex(item);
+  
+      if (existingIndex === -1) {
+        this.items.push(item); // If not found, add to set
+      } else {
         this.items[existingIndex].hours += item.time;
         this.items[existingIndex].net += item.net;
+      }
     }
-    }
-
-    // Custom "has" method that uses a custom equals method
+  
+    // Check if an item exists in the set
     has(item) {
-    return this.items.some(existingItem => this.equals(existingItem, item));
+      return this.items.some(existingItem => this.equals(existingItem, item));
     }
+  
+    // Find index of the item in the set
     findIndex(item) {
-    return this.items.findIndex(existingItem => this.equals(existingItem, item));
+      return this.items.findIndex(existingItem => this.equals(existingItem, item));
     }
-
+  
+    // Equality check (based on id or name)
     equals(item1, item2) {
-    return item1.id === item2.id || item1.name === item2.name;
+      return item1.id === item2.id || item1.name === item2.name;
     }
-
-    // Get all items in the custom set
+  
+    // Get all items in the set
     values() {
-    return this.items;
+      return this.items;
     }
-
-    // Save the current CustomSet to MongoDB
-    
+  
+    // Save the custom set to the server (using API call)
     async save() {
-        try {
-        const customSet = new CustomSetModel({ items: this.items });
-        await customSet.save();
-        console.log('CustomSet saved to database!');
-        } catch (error) {
+      try {
+        const response = await fetch('http://localhost:4000/api/saveCustomSet', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(this.items),
+        });
+        const result = await response.json();
+        console.log('CustomSet saved:', result);
+      } catch (error) {
         console.error('Error saving CustomSet:', error);
-        }
+      }
     }
-
-    // Load the CustomSet from MongoDB
+  
+    // Load the custom set from the server (using API call)
     static async load() {
-        try {
-        const customSetDoc = await CustomSetModel.findOne(); // Fetch the first document
-        if (customSetDoc) {
-            const customSet = new CustomSet();
-            customSet.items = customSetDoc.items;
-            console.log('CustomSet loaded from database!');
-            return customSet;
-        }
-        console.log('No CustomSet found in database.');
-        return new CustomSet(); // Return an empty set if none found
-        } catch (error) {
+      try {
+        const response = await fetch('http://localhost:4000/api/masterLedger');
+        const data = await response.json();
+        const customSet = new CustomSet();
+        customSet.items = data;
+        console.log('CustomSet loaded:', customSet);
+        return customSet;
+      } catch (error) {
         console.error('Error loading CustomSet:', error);
-        }
+      }
     }
-}
-//module.exports = CustomSet;
+  }

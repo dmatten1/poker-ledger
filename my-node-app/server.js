@@ -1,14 +1,13 @@
 import express from 'express';
-import mongoose from 'mongoose'; // Make sure to import mongoose
+import mongoose from 'mongoose';
 import cors from 'cors';
 
-// Initialize Express app
 const app = express();
-app.use(cors());                      // Enable CORS
-app.use(express.json());              // Use built-in JSON parser in Express
+app.use(cors());
+app.use(express.json()); // JSON parsing
 
 // Connect to MongoDB database
-mongoose.connect('mongodb+srv://dmatten1:C79GRKUVmqXfDg@pokerledger.w9rjc.mongodb.net/', {
+mongoose.connect('mongodb+srv://dmatten1:C79GRKUVmqXfDg@pokerledger.w9rjc.mongodb.net/pokerledger?retryWrites=true&w=majority', {
 })
   .then(() => console.log('MongoDB connected!'))
   .catch(err => console.error('MongoDB connection error:', err));
@@ -26,19 +25,44 @@ const itemSchema = new mongoose.Schema({
 const customSetSchema = new mongoose.Schema({
   items: [itemSchema],
 });
-const CustomSetModel = mongoose.model('CustomSet', customSetSchema);
-export default CustomSetModel; // Export the model for use in your app
-// Create a model for the custom set
-//export const CustomSet = mongoose.model('CustomSet', customSetSchema);
 
+const CustomSetModel = mongoose.model('CustomSet', customSetSchema);
+
+// API endpoint to load the custom set
+app.get('/api/masterLedger', async (req, res) => {
+  try {
+    const customSetDoc = await CustomSetModel.findOne();
+    if (customSetDoc) {
+      res.status(200).json(customSetDoc.items);
+    } else {
+      res.status(404).json({ message: 'No CustomSet found' });
+    }
+  } catch (error) {
+    console.error('Error fetching CustomSet:', error);
+    res.status(500).json({ error: 'Failed to fetch CustomSet' });
+  }
+});
+
+// API endpoint to save the custom set
+app.post('/api/saveCustomSet', async (req, res) => {
+  const { items } = req.body;
+  try {
+    let customSet = await CustomSetModel.findOne();
+    if (customSet) {
+      customSet.items = items;
+    } else {
+      customSet = new CustomSetModel({ items });
+    }
+    await customSet.save();
+    res.status(200).json({ message: 'CustomSet saved successfully!' });
+  } catch (error) {
+    console.error('Error saving CustomSet:', error);
+    res.status(500).json({ error: 'Failed to save CustomSet' });
+  }
+});
 
 // Start the server
 const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
 });
-
-export const connectDB = async () => {
-  await mongoose.connect('mongodb+srv://dmatten1:C79GRKUVmqXfDg@cluster.mongodb.net/?retryWrites=true&w=majority&appName=appname', {
-  });
-};
