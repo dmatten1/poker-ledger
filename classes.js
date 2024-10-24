@@ -1,9 +1,17 @@
 // Define Entry class on the client!! side
 export class Entry {
-    constructor(name, id, startTime, endTime, net) {
+    constructor(name, id, net) {
       this.name = name;
-      this.id = id;
-      this.time = (endTime - startTime) / 3600000; // Calculate time in hours
+      this.id = id.toString();
+    //   if (startTime === "") {
+        
+    //   }
+    //   if (endTime === "") {
+    //     let cal = new Date();
+    //     let formatted = cal.toISOString().split('T')[0]; //i have no clue what this does
+    //     endTime = formatted;
+    //   }
+    //   this.time = (endTime - startTime) / 3600000; // Calculate time in hours
       this.net = net;
     }
   }
@@ -21,9 +29,29 @@ export class Entry {
       if (existingIndex === -1) {
         this.items.push(item); // If not found, add to set
       } else {
-        this.items[existingIndex].hours += item.time;
+        //this.items[existingIndex].hours += item.time;
         this.items[existingIndex].net += item.net;
       }
+    }
+     // Method to add entries, with duplicate check and net update logic
+     addEntry(name, id, net) {
+        let duplicateFound = false;
+
+        // Iterate over the existing items in the set to check for duplicates
+        this.items.forEach((entry) => {
+            if (entry.name === name || entry.id === id) {
+                console.log(`Duplicate found for ${name}. Old net: ${entry.net}, adding: ${net}`);
+                entry.net += Number(net); 
+                console.log(`New net for ${name}: ${entry.net}`);
+                duplicateFound = true;
+            }
+        });
+
+        // If no duplicate was found, create a new entry and add it to the set
+        if (!duplicateFound) {
+            const newEntry = new Entry(name, id, net); // Use currentRow[0] for name, and currentRow[1] for ID
+            this.items.push(newEntry); // Add the new entry to the items array
+        }
     }
   
     // Check if an item exists in the set

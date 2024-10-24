@@ -6,38 +6,9 @@
     <title>All Time Stats</title>
 </head>
 <body>
+    <p>As of 10/23/24:</p>
     <div id="ledgerContent"></div>
     <button id="goBack">Return to homepage</button>
     <script type="module" src="allTimeStats.js"></script>
 </body>
-<script>
-document.addEventListener('DOMContentLoaded', () => {
-    // Fetch the masterLedger from your server
-    fetch('http://localhost:4000/api/masterLedger')
-        .then(response => response.json()) // Parse the JSON response
-        .then(data => {
-            if (data && data.items && data.items.length > 0) {
-                // Format and display the ledger data
-                const ledgerContent = data.items.map(item => {
-                    return `
-                        <div>
-                            <strong>Name:</strong> ${item.name} <br>
-                            <strong>ID:</strong> ${item.id} <br>
-                            <strong>Hours:</strong> ${item.hours} <br>
-                            <strong>Net:</strong> ${item.net} <br>
-                            <strong>Hourly:</strong> ${item.hourly} <br><br>
-                        </div>
-                    `;
-                }).join('');
-                document.getElementById('ledgerContent').innerHTML = ledgerContent;
-            } else {
-                document.getElementById('ledgerContent').innerHTML = "No ledger data available.";
-            }
-        })
-        .catch(error => {
-            console.error('Error fetching masterLedger:', error);
-            document.getElementById('ledgerContent').innerHTML = "Error loading ledger data.";
-        });
-});
-</script>
 </html>

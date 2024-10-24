@@ -71,12 +71,13 @@ button.addEventListener('click', () => {
       if (!data.has(key)) {
         data.set(key, value);
         if (fileExtension === 'csv') {
-          entrySet.add(new Entry(`${key.slice(1,-1)}`, currentRow[1], currentRow[2], currentRow[3], value));
-        }
+           //no time
+        } //addEntry is overengineered, never gets here
         
       } else {
         data.set(key, data.get(key) + value);
       }
+      entrySet.addEntry(`${key.slice(1,-1)}`, currentRow[1], value);
     }
 
 
@@ -155,7 +156,7 @@ button.addEventListener('click', () => {
 
 function loadLedger() {
   localStorage.setItem('ledgerData', resultLedger);
-  localStorage.setItem('entrySet', entrySet);
+  localStorage.setItem('entrySet', JSON.stringify(entrySet));
   window.location.href = 'ledgerPage.html';
 
 }
