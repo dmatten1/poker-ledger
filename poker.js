@@ -1,6 +1,6 @@
 import { CustomSet } from './classes.js';
 import { Entry } from './classes.js';
-
+let holdForS = "";
 const csvFile = document.getElementById('csvFile'); //can also be .xlsx
 const button = document.getElementById('button');
 const statsButton = document.getElementById('goToAllTimeStats');
@@ -81,17 +81,17 @@ button.addEventListener('click', () => {
     }
 
 
-    data.forEach((value, key) => {
-      if (fileExtension === 'csv') {
-        resultLedger += (`${key.slice(1,-1)}: ${Number(value)}<br>`);
+    // data.forEach((value, key) => {
+    //   if (fileExtension === 'csv') {
+    //     resultLedger += (`${key.slice(1,-1)}: ${Number(value)}<br>`);
         
 
-      }
-      else {
-        resultLedger += (`${key}: ${Number(value)}<br>`);
-      }
+    //   }
+    //   else {
+    //     resultLedger += (`${key}: ${Number(value)}<br>`);
+    //   }
       
-    });
+    // });
 
     //actually start doing the math
     const winners = [];
@@ -100,17 +100,25 @@ button.addEventListener('click', () => {
 
 
 // Categorize winners and losers
-    data.forEach((value,key) => {
-        value = Number(value);
-        if (value > 0) {
-            winners.push(key);
-        } else if (value < 0) {
-            losers.push(key);
-        }
+    // data.forEach((value,key) => {
+    //     value = Number(value);
+    //     if (value > 0) {
+    //         winners.push(key);
+    //     } else if (value < 0) {
+    //         losers.push(key);
+    //     }
+    // });
+    entrySet.items.forEach(e => {
+      let value = Number(e.net);
+      if (value > 0) {
+        winners.push(new Entry(e.name, e.id, e.net)); // Use 'e.name' or 'e.id' here instead of 'key'
+      } else if (value < 0) {
+        losers.push(new Entry(e.name, e.id, e.net)); // Use 'e.name' or 'e.id' here instead of 'key'
+      } //arrays of entries
     });
     // Sort winners and losers
-    winners.sort((a, b) => data.get(b) - data.get(a)); // Largest winner first
-    losers.sort((a, b) => data.get(a) - data.get(b)); // Largest loser first
+    winners.sort((a, b) => entrySet.get(b) - entrySet.get(a)); // Largest winner first
+    losers.sort((a, b) => entrySet.get(a) - entrySet.get(b)); // Largest loser first
 
     // Get the current date
     let cal = new Date();
@@ -119,26 +127,29 @@ button.addEventListener('click', () => {
     resultLedger += ('Ledger:<br>');
 
     for (let loser of losers) {
-    let amountOwed = Math.abs(data.get(loser));
-
-    for (let winner of winners) {
-        if (amountOwed == 0) break; // Loser has paid off all they owe
-
-        let winnerNet = data.get(winner);
-
-        if (winnerNet == 0) continue; // Skip if the winner has been paid off
-
+      let amountOwed = Math.abs(loser.net);  // Get the amount the loser owes
+    
+      for (let winner of winners) {
+        if (amountOwed === 0) break; // Loser has paid off all they owe
+    
+        let winnerNet = winner.net;
+    
+        if (winnerNet === 0) continue; // Skip if the winner has been paid off
+    
         // Determine payment
         let payment = Math.min(amountOwed, winnerNet);
-
-        // Print who owes whom
-        resultLedger += (`${loser} owes ${winner} $${Number(Math.round(payment))}<br>`);
+    
+        // Display who owes whom
+        resultLedger += (`${loser.name} owes ${winner.name} $${Number(Math.round(payment))}<br>`);
+        holdForS += (`${loser.name} owes ${winner.name} $${Number(Math.round(payment))}<br>`);
+    
         // Update remaining amounts
         amountOwed -= payment;
-        data.set(winner, data.get(winner)-payment);
-        }
-        }
-        resultLedger += '<br></br>'
+        winner.net -= payment; // Reduce the winner's net by the payment
+      }
+    }
+        resultLedger += '<br></br>';
+        holdForS += '<br></br>';
         //document.write(resultLedger);   test if resultLedger is correct
         loadLedger();
   };
@@ -155,7 +166,14 @@ button.addEventListener('click', () => {
   });
 
 function loadLedger() {
-  localStorage.setItem('ledgerData', resultLedger);
+  //localStorage.setItem('ledgerData', resultLedger);
+  let s = entrySet.stringPrint();
+  let cal = new Date();
+  let formatted = cal.toISOString().split('T')[0]; // Format the date as yyyy-MM-dd
+  s += (`<br><br>` + formatted + `<br><br>`);
+  s += ('Ledger:<br>');
+  s += holdForS;
+  localStorage.setItem('ledgerData', s);
   localStorage.setItem('entrySet', JSON.stringify(entrySet));
   window.location.href = 'ledgerPage.html';
 

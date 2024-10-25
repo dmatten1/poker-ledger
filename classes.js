@@ -102,4 +102,25 @@ export class Entry {
         console.error('Error loading CustomSet:', error);
       }
     }
+    stringPrint() {
+        let s = "";
+        this.items.forEach(e => {
+            s += e.name + ": " + e.net + "<br>";
+        });
+        return s;
+    }
+    get(name) {
+        this.items.forEach(element => {
+            if (name === element.name) {
+                return element.net;
+            }
+        });
+    }
+    set(name, net) {
+        this.items.forEach(element => {
+            if (name === element.name) {
+                element.net = net;
+            }
+        });
+    }
   }
