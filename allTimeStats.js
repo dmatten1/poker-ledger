@@ -23,7 +23,6 @@ const loadMasterLedger = async () => {
                                 <th>Net</th>
                                 <th>Hours</th>
                                 <th>Hourly</th>
-                                
                             </tr>
                         </thead>
                         <tbody>
