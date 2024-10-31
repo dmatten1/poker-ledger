@@ -91,19 +91,22 @@ app.post('/api/addToAllTime', async (req, res) => {
       customSet = new CustomSetModel({ items: entries });
     } else {
       entries.forEach(entry => {
-        let found = false;
-        customSet.items.forEach(item => {
-          if (item.id === entry.id) {
-            item.net += entry.net;
-            item.hours += entry.hours;
-            found = true;
-          }
-        });
-        if (!found) {
+        // Find item in the current set that matches the entry id
+        const existingItem = customSet.items.find(item => item.id === entry.id || item.name === entry.name);
+        
+        if (existingItem) {
+          // Update net and hours for matching items
+          existingItem.net += entry.net;
+          existingItem.hours += entry.hours;
+          console.log(`Updated entry with id ${entry.id}: net is now ${existingItem.net}, hours are now ${existingItem.hours}`);
+        } else {
+          // Add new entry if no match found
           customSet.items.push(entry);
+          console.log(`Added new entry with id ${entry.id}`);
         }
       });
     }
+    customSet.items.sort((a, b) => b.net - a.net);
     await customSet.save();
     res.status(200).json({ message: 'Master ledger updated successfully!' });
   } catch (error) {

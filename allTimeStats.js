@@ -26,6 +26,7 @@ const loadMasterLedger = async () => {
                                 
                             </tr>
                         </thead>
+                        <br></br>
                         <tbody>
                 `;
 
