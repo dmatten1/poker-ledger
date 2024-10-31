@@ -18,7 +18,7 @@ addAllTimeButton.addEventListener('click', async () => {
 
 const run = async (entries) => {
     try {
-        const response = await fetch('http://localhost:4000/api/addToAllTime', {
+        const response = await fetch('https://poker-ledger-1.onrender.com/api/addToAllTime', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

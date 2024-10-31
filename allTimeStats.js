@@ -5,7 +5,7 @@ button.addEventListener('click', () => {
 
 const loadMasterLedger = async () => {
     try {
-        const response = await fetch('http://localhost:4000/api/masterLedger');
+        const response = await fetch('https://poker-ledger-1.onrender.com/api/masterLedger');
         
         if (response.ok) {
             const customSet = await response.json();

@@ -12,7 +12,14 @@ dotenv.config({ path: path.join(__dirname, '../.env') });
 
 const app = express();
 const port = process.env.PORT || 4000;
-app.use(cors({ origin: '*' }));
+const corsOptions = {
+  origin: '*', // or specify allowed origins
+  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+  allowedHeaders: 'Content-Type,Authorization',
+  credentials: true,
+  exposedHeaders: 'Access-Control-Allow-Private-Network',
+};
+app.use(cors(corsOptions));
 app.use(express.json()); // JSON parsing
 
 // Serve static files from the parent directory

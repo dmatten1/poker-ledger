@@ -77,7 +77,7 @@ export class Entry {
     // Save the custom set to the server (using API call)
     async save() {
       try {
-        const response = await fetch('http://localhost:4000/api/saveCustomSet', {
+        const response = await fetch('https://poker-ledger-1.onrender.com/api/saveCustomSet', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(this.items),
@@ -92,7 +92,7 @@ export class Entry {
     // Load the custom set from the server (using API call)
     static async load() {
       try {
-        const response = await fetch('http://localhost:4000/api/masterLedger');
+        const response = await fetch('https://poker-ledger-1.onrender.com/api/masterLedger');
         const data = await response.json();
         const customSet = new CustomSet();
         customSet.items = data;
