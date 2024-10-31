@@ -26,7 +26,6 @@ const loadMasterLedger = async () => {
                                 
                             </tr>
                         </thead>
-                        <br></br>
                         <tbody>
                 `;
 
@@ -39,6 +38,7 @@ const loadMasterLedger = async () => {
                         <td>${(item.net/item.hours).toFixed(2)}</td>
                     </tr>
                 `).join('');
+                ledgerContent += `<br></br>`;
 
                 // Close table structure
                 ledgerContent += `
