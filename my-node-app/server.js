@@ -2,17 +2,24 @@ import express from 'express';
 import mongoose from 'mongoose';
 import cors from 'cors';
 import dotenv from 'dotenv';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
 // Configure dotenv to load environment variables from .env file
-dotenv.config();
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+dotenv.config({ path: path.join(__dirname, '../.env') });
 
 const app = express();
+const port = process.env.PORT || 4000;
 app.use(cors());
 app.use(express.json()); // JSON parsing
 
+// Serve static files from the parent directory
+app.use(express.static(path.join(__dirname, '../')));
+
 // Connect to MongoDB database
-mongoose.connect('mongodb+srv://dmatten1:C79GRKUVmqXfDg@pokerledger.w9rjc.mongodb.net/pokerledger?retryWrites=true&w=majority', {
-})
+mongoose.connect(process.env.MONGO_URI, {})
   .then(() => console.log('MongoDB connected!'))
   .catch(err => console.error('MongoDB connection error:', err));
 
@@ -33,9 +40,9 @@ const CustomSetModel = mongoose.model('CustomSet', customSetSchema);
 // API endpoint to load the custom set
 app.get('/api/masterLedger', async (req, res) => {
   try {
-    const customSetDocs = await CustomSetModel.find(); // Returns an array
+    const customSetDocs = await CustomSetModel.find();
     if (customSetDocs && customSetDocs.length > 0) {
-      res.status(200).json(customSetDocs[0].items); // Return items from the first document
+      res.status(200).json(customSetDocs[0].items);
     } else {
       res.status(404).json({ message: 'No CustomSet found' });
     }
@@ -65,44 +72,31 @@ app.post('/api/saveCustomSet', async (req, res) => {
 
 // Endpoint to add or update entries in the master ledger
 app.post('/api/addToAllTime', async (req, res) => {
-  const { entries } = req.body; // Expecting an array of entries in the request body
-
+  const { entries } = req.body;
   if (!Array.isArray(entries) || entries.length === 0) {
     return res.status(400).json({ error: 'Entries must be a non-empty array' });
   }
 
   try {
-    // Fetch the current custom set from the database
     let customSet = await CustomSetModel.findOne();
-    
     if (!customSet) {
-      // If no custom set exists, create a new one with the entries
       customSet = new CustomSetModel({ items: entries });
     } else {
-      // Loop over each entry in the request
       entries.forEach(entry => {
         let found = false;
-        
-        // Loop over each item in the customSet
-        customSet.items.forEach((item) => {
+        customSet.items.forEach(item => {
           if (item.id === entry.id) {
-            // Update existing entry's net value
             item.net += entry.net;
             found = true;
           }
         });
-        
-        // If no matching entry is found, add it to customSet
         if (!found) {
           customSet.items.push(entry);
         }
       });
     }
-
-    // Save the updated custom set back to the database
     await customSet.save();
     res.status(200).json({ message: 'Master ledger updated successfully!' });
-    
   } catch (error) {
     console.error('Error updating master ledger:', error);
     res.status(500).json({ error: 'Failed to update master ledger' });
@@ -111,22 +105,11 @@ app.post('/api/addToAllTime', async (req, res) => {
 
 // API endpoint to create a new custom set
 app.post('/api/createCustomSet', async (req, res) => {
-  const { items } = req.body; // Expecting an array of items in the request body
-
+  const { items } = req.body;
   try {
-    // Create a new instance of CustomSetModel
-    const newCustomSet = new CustomSetModel({
-      items, // Items should be an array of objects matching the itemSchema
-    });
-
-    // Save the new custom set to the database
+    const newCustomSet = new CustomSetModel({ items });
     await newCustomSet.save();
-
-    // Respond with a success message and the newly created CustomSet
-    res.status(201).json({
-      message: 'CustomSet created successfully!',
-      customSet: newCustomSet,
-    });
+    res.status(201).json({ message: 'CustomSet created successfully!', customSet: newCustomSet });
   } catch (error) {
     console.error('Error creating CustomSet:', error);
     res.status(500).json({ error: 'Failed to create CustomSet' });
@@ -134,7 +117,6 @@ app.post('/api/createCustomSet', async (req, res) => {
 });
 
 // Start the server
-const PORT = process.env.PORT || 4000;
-app.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
+app.listen(port, () => {
+  console.log(`Server is running on http://localhost:${port}`);
 });
