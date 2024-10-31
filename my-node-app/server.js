@@ -35,7 +35,7 @@ const itemSchema = new mongoose.Schema({
   name: { type: String, required: true },
   id: { type: String, required: true },
   net: { type: Number, required: true },
-  hours: { type: Number, required: true }
+  hours: { type: Number, required: true, default: 0}
 });
 
 // Define custom set schema

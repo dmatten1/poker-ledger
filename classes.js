@@ -1,21 +1,9 @@
 // Define Entry class on the client!! side
 export class Entry {
-    constructor(name, id, net, start, end) {
+    constructor(name, id, net, hours) {
       this.name = name;
       this.id = id.toString();
-      const startTime = new Date(start);
-      const endTime = new Date(end);
-
-      this.hours = (endTime - startTime)/3600000;
-    //   if (startTime === "") {
-        
-    //   }
-    //   if (endTime === "") {
-    //     let cal = new Date();
-    //     let formatted = cal.toISOString().split('T')[0]; //i have no clue what this does
-    //     endTime = formatted;
-    //   }
-    //   this.time = (endTime - startTime) / 3600000; // Calculate time in hours
+      this.hours = hours;
       this.net = net;
     }
   }
@@ -39,7 +27,7 @@ export class Entry {
       }
     }
      // Method to add entries, with duplicate check and net update logic
-     addEntry(name, id, net, start, end) {
+     addEntry(name, id, net, hours) {
         let duplicateFound = false;
 
         // Iterate over the existing items in the set to check for duplicates
@@ -55,7 +43,7 @@ export class Entry {
 
         // If no duplicate was found, create a new entry and add it to the set
         if (!duplicateFound) {
-            const newEntry = new Entry(name, id, net, start, end); // Use currentRow[0] for name, and currentRow[1] for ID
+            const newEntry = new Entry(name, id, net, hours); // Use currentRow[0] for name, and currentRow[1] for ID
             this.items.push(newEntry); // Add the new entry to the items array
         }
     }

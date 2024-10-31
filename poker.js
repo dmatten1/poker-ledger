@@ -80,9 +80,9 @@ button.addEventListener('click', () => {
       }
       if(currentRow[3].length<4) { //completely arbitrary, just want to ensure that it catches no dates bc idk how excel works
         let endDate = new Date();
-        entrySet.addEntry(`${key.slice(1,-1)}`, currentRow[1], value, currentRow[2], endDate); //do we need mongoose's now?
+        entrySet.addEntry(`${key.slice(1,-1)}`, currentRow[1], value, (endDate - currentRow[2])/3600000); //do we need mongoose's now?
       }
-      else {entrySet.addEntry(`${key.slice(1,-1)}`, currentRow[1], value, currentRow[2], currentRow[3]);}
+      else {entrySet.addEntry(`${key.slice(1,-1)}`, currentRow[1], value, (currentRow[3] - currentRow[2])/3600000);}
     }
 
 
@@ -116,9 +116,9 @@ button.addEventListener('click', () => {
     entrySet.items.forEach(e => {
       let value = Number(e.net);
       if (value > 0) {
-        winners.push(new Entry(e.name, e.id, e.net, e.start, e.end));
+        winners.push(new Entry(e.name, e.id, e.net, e.hours));
       } else if (value < 0) {
-        losers.push(new Entry(e.name, e.id, e.net, e.start, e.end)); 
+        losers.push(new Entry(e.name, e.id, e.net, e.hours)); 
       } //arrays of entries
     });
     // Sort winners and losers
