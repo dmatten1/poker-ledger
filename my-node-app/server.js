@@ -19,7 +19,7 @@ app.use(express.json()); // JSON parsing
 app.use(express.static(path.join(__dirname, '../')));
 
 // Connect to MongoDB database
-mongoose.connect(process.env.MONGO_URI, {})
+mongoose.connect('mongodb+srv://dmatten1:C79GRKUVmqXfDg@pokerledger.w9rjc.mongodb.net/pokerledger?retryWrites=true&w=majority', {})
   .then(() => console.log('MongoDB connected!'))
   .catch(err => console.error('MongoDB connection error:', err));
 
