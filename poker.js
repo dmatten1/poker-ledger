@@ -49,7 +49,8 @@ button.addEventListener('click', () => {
     else {
       endpoint = rows.length;
     }
-
+    //--------------------
+    let lastValidStartTime = null;
     for (let i = 1; i < endpoint; i++) {
       let nameEndIndex = rows[i].indexOf("\"", 1);
       for (let j=1;j<nameEndIndex;j++) {  //check for commas in the name that might screw with the comma splitting
@@ -63,26 +64,51 @@ button.addEventListener('click', () => {
 
 
       const currentRow = rows[i].split(',');
-      const key = currentRow[0];
+      const name = currentRow[0];
 
-      const value = Math.round(Number.parseFloat(currentRow[(colNum)])/100); // Value from the 8th column
+      const net = Math.round(Number.parseFloat(currentRow[(colNum)])/100); // Value from the 8th column
 
 
 
-      if (!data.has(key)) {
-        data.set(key, value);
-        if (fileExtension === 'csv') {
-           //no time
-        } //addEntry is overengineered, never gets here
+      // if (!data.has(key)) { prety sure this is all dead
+      //   data.set(key, value);
+      //   if (fileExtension === 'csv') {
+      //      //no time
+      //   } //addEntry is overengineered, never gets here
         
+      // } else {
+      //   data.set(key, data.get(key) + value);
+      // }
+      // if(currentRow[3].length == 0) {
+      //   let endDate = new Date();
+      //   entrySet.addEntry(`${name.slice(1,-1)}`, currentRow[1], net, (endDate - currentRow[2])/3600000); //do we need mongoose's now?
+      // }
+      // else {entrySet.addEntry(`${name.slice(1,-1)}`, currentRow[1], net, (currentRow[3] - currentRow[2])/3600000);}
+
+      let startTime = currentRow[2] ? new Date(currentRow[2]) : lastValidStartTime;
+
+      // Check if startTime is valid
+      if (!startTime || isNaN(startTime)) {
+        console.error(`Invalid startTime in row ${i}: startTime (${currentRow[2]})`);
+        continue; // Skip this entry if startTime is invalid
       } else {
-        data.set(key, data.get(key) + value);
+        lastValidStartTime = startTime; // Update lastValidStartTime for the next row
       }
-      if(currentRow[3].length<4) { //completely arbitrary, just want to ensure that it catches no dates bc idk how excel works
-        let endDate = new Date();
-        entrySet.addEntry(`${key.slice(1,-1)}`, currentRow[1], value, (endDate - currentRow[2])/3600000); //do we need mongoose's now?
+    
+      // Parse endTime or use current date if blank
+      const endTime = currentRow[3] ? new Date(currentRow[3]) : new Date();
+    
+      // Check if endTime is valid
+      if (isNaN(endTime)) {
+        console.error(`Invalid endTime in row ${i}: endTime (${currentRow[3]})`);
+        continue; // Skip this entry if endTime is invalid
       }
-      else {entrySet.addEntry(`${key.slice(1,-1)}`, currentRow[1], value, (currentRow[3] - currentRow[2])/3600000);}
+    
+      // Calculate hours and add entry
+      const hours = (endTime - startTime) / 3600000;
+      entrySet.addEntry(`${name.slice(1, -1)}`, currentRow[1], net, hours);
+
+
     }
 
 
