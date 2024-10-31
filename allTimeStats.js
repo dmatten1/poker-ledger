@@ -34,8 +34,8 @@ const loadMasterLedger = async () => {
                     <tr>
                         <td>${item.name}</td>
                         <td>${item.net}</td>
-                        <td>${item.hours}</td>
-                        <td>${item.net/item.hours}</td>
+                        <td>${item.hours.toFixed(2)}</td>
+                        <td>${(item.net/item.hours).toFixed(2)}</td>
                     </tr>
                 `).join('');
 
