@@ -1,3 +1,4 @@
+
 import { CustomSet } from './classes.js';
 import { Entry } from './classes.js';
 let holdForS = "";
@@ -77,7 +78,11 @@ button.addEventListener('click', () => {
       } else {
         data.set(key, data.get(key) + value);
       }
-      entrySet.addEntry(`${key.slice(1,-1)}`, currentRow[1], value);
+      if(currentRow[3].length<4) { //completely arbitrary, just want to ensure that it catches no dates bc idk how excel works
+        let endDate = new Date();
+        entrySet.addEntry(`${key.slice(1,-1)}`, currentRow[1], value, currentRow[2], endDate); //do we need mongoose's now?
+      }
+      else {entrySet.addEntry(`${key.slice(1,-1)}`, currentRow[1], value, currentRow[2], currentRow[3]);}
     }
 
 
@@ -111,9 +116,9 @@ button.addEventListener('click', () => {
     entrySet.items.forEach(e => {
       let value = Number(e.net);
       if (value > 0) {
-        winners.push(new Entry(e.name, e.id, e.net)); // Use 'e.name' or 'e.id' here instead of 'key'
+        winners.push(new Entry(e.name, e.id, e.net, e.start, e.end));
       } else if (value < 0) {
-        losers.push(new Entry(e.name, e.id, e.net)); // Use 'e.name' or 'e.id' here instead of 'key'
+        losers.push(new Entry(e.name, e.id, e.net, e.start, e.end)); 
       } //arrays of entries
     });
     // Sort winners and losers

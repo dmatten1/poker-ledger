@@ -1,8 +1,12 @@
 // Define Entry class on the client!! side
 export class Entry {
-    constructor(name, id, net) {
+    constructor(name, id, net, start, end) {
       this.name = name;
       this.id = id.toString();
+      const startTime = new Date(start);
+      const endTime = new Date(end);
+
+      this.hours = (endTime - startTime)/3600000;
     //   if (startTime === "") {
         
     //   }
@@ -31,10 +35,11 @@ export class Entry {
       } else {
         //this.items[existingIndex].hours += item.time;
         this.items[existingIndex].net += item.net;
+        this.items[existingIndex].hours += item.hours;
       }
     }
      // Method to add entries, with duplicate check and net update logic
-     addEntry(name, id, net) {
+     addEntry(name, id, net, start, end) {
         let duplicateFound = false;
 
         // Iterate over the existing items in the set to check for duplicates
@@ -42,6 +47,7 @@ export class Entry {
             if (entry.name === name || entry.id === id) {
                 console.log(`Duplicate found for ${name}. Old net: ${entry.net}, adding: ${net}`);
                 entry.net += Number(net); 
+                entry.hours += Number(hours);
                 console.log(`New net for ${name}: ${entry.net}`);
                 duplicateFound = true;
             }
@@ -49,7 +55,7 @@ export class Entry {
 
         // If no duplicate was found, create a new entry and add it to the set
         if (!duplicateFound) {
-            const newEntry = new Entry(name, id, net); // Use currentRow[0] for name, and currentRow[1] for ID
+            const newEntry = new Entry(name, id, net, start, end); // Use currentRow[0] for name, and currentRow[1] for ID
             this.items.push(newEntry); // Add the new entry to the items array
         }
     }
@@ -116,7 +122,7 @@ export class Entry {
             }
         });
     }
-    set(name, net) {
+    set(name, net) { //double check this, i'm not going to change it for hours yet because i'm pretty sure its unnecessary
         this.items.forEach(element => {
             if (name === element.name) {
                 element.net = net;

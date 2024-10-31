@@ -21,6 +21,9 @@ const loadMasterLedger = async () => {
                             <tr>
                                 <th>Name</th>
                                 <th>Net</th>
+                                <th>Hours</th>
+                                <th>Hourly</th>
+                                
                             </tr>
                         </thead>
                         <tbody>
@@ -31,6 +34,8 @@ const loadMasterLedger = async () => {
                     <tr>
                         <td>${item.name}</td>
                         <td>${item.net}</td>
+                        <td>${item.hours}</td>
+                        <td>${item.net/item.hours}</td>
                     </tr>
                 `).join('');
 

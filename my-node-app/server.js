@@ -34,7 +34,8 @@ mongoose.connect('mongodb+srv://dmatten1:C79GRKUVmqXfDg@pokerledger.w9rjc.mongod
 const itemSchema = new mongoose.Schema({
   name: { type: String, required: true },
   id: { type: String, required: true },
-  net: { type: Number, required: true }
+  net: { type: Number, required: true },
+  hours: { type: Number, required: true }
 });
 
 // Define custom set schema
@@ -94,6 +95,7 @@ app.post('/api/addToAllTime', async (req, res) => {
         customSet.items.forEach(item => {
           if (item.id === entry.id) {
             item.net += entry.net;
+            item.hours += entry.hours;
             found = true;
           }
         });
