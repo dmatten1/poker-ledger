@@ -12,7 +12,7 @@ dotenv.config({ path: path.join(__dirname, '../.env') });
 
 const app = express();
 const port = process.env.PORT || 4000;
-app.use(cors());
+app.use(cors({ origin: '*' }));
 app.use(express.json()); // JSON parsing
 
 // Serve static files from the parent directory
@@ -118,5 +118,5 @@ app.post('/api/createCustomSet', async (req, res) => {
 
 // Start the server
 app.listen(port, () => {
-  console.log(`Server is running on http://localhost:${port}`);
+  console.log(`Server is running on ${port}`);
 });
