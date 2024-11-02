@@ -66,7 +66,7 @@ button.addEventListener('click', () => {
       const currentRow = rows[i].split(',');
       const name = currentRow[0];
 
-      const net = Math.round(Number.parseFloat(currentRow[(colNum)])/100); // Value from the 8th column
+      const net = Number.parseFloat(currentRow[(colNum)])/100; // Value from the 8th column
 
 
 
@@ -148,8 +148,8 @@ button.addEventListener('click', () => {
       } //arrays of entries
     });
     // Sort winners and losers
-    winners.sort((a, b) => entrySet.get(b) - entrySet.get(a)); // Largest winner first
-    losers.sort((a, b) => entrySet.get(a) - entrySet.get(b)); // Largest loser first
+    winners.sort((a, b) => b.net - a.net); // Largest winner first
+    losers.sort((a, b) => a.net - b.net); // Largest loser first
 
     // Get the current date
     let cal = new Date();
