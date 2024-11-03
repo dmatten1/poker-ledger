@@ -171,8 +171,10 @@ button.addEventListener('click', () => {
         let payment = Math.min(amountOwed, winnerNet);
     
         // Display who owes whom
-        resultLedger += (`${loser.name} owes ${winner.name} $${Number(Math.round(payment))}<br>`);
-        holdForS += (`${loser.name} owes ${winner.name} $${Number(Math.round(payment))}<br>`);
+        if (Math.round(payment) != 0) {
+          resultLedger += (`${loser.name} owes ${winner.name} $${Number(Math.round(payment))}<br>`);
+          holdForS += (`${loser.name} owes ${winner.name} $${Number(Math.round(payment))}<br>`);
+        }
     
         // Update remaining amounts
         amountOwed -= payment;
