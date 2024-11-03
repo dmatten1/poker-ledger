@@ -32,7 +32,7 @@ const loadMasterLedger = async () => {
                 ledgerContent += customSet.map(item => `
                     <tr>
                         <td>${item.name}</td>
-                        <td>${item.net}</td>
+                        <td>${item.net.toFixed(2)}</td>
                         <td>${item.hours.toFixed(2)}</td>
                         <td>${(item.net/item.hours).toFixed(2)}</td>
                     </tr>
