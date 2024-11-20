@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ledger</title>
+</head>
+<script type="module">
+    document.addEventListener('DOMContentLoaded', () => {
+        const ledgerData = localStorage.getItem('ledgerData'); // Retrieve the ledger data
+
+        if (ledgerData) {
+            document.getElementById('ledgerContent').innerHTML = ledgerData; // Insert it into the page
+        } else {
+            document.getElementById('ledgerContent').innerHTML = "No ledger data available.";
+        }
+    });
+</script>
+
+<body>
+    <div id="ledgerContent"></div>
+    <button id="addToAllTime">Add To All Time Stats</button>
+    <script type="module" src="ledgerPage.js"></script>
+</body>
+</html>
