@@ -4,7 +4,7 @@
 
 **PokerLedger** is a web application for managing and analyzing poker session data. It simplifies calculating payouts and updating an all-time leaderboard. After uploading session data, the app determines who owes whom and allows you to update the leaderboard with the latest results.
 
-Access the live application at: [PokerLedger](https://poker-ledger-1.onrender.com)
+Access the live application at: [PokerLedger](https://poker-ledger-1.onrender.com) (takes a minute or so to load)
 
 ## Features
 
